@@ -81,7 +81,7 @@ function setUserOpt() {
         if (opt.showIndicators) {
             for (i = 0; i < elem.length; i += 1) {
                 indicator[i] = document.createElement("div");
-                indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.6);";
+                indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
                 document.body.appendChild(indicator[i]);
             }
         }
@@ -89,7 +89,7 @@ function setUserOpt() {
 
     function updateIndicator() {
         for (i = 0; i < elem.length; i += 1) {
-            indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.6);";
+            indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
         }
     }
 
@@ -156,8 +156,8 @@ function setUserOpt() {
                 frames[i].style.outline = "15px dashed rgba(255,0,0,0.2)";
                 frames[i].style.outlineOffset = "-15px";
                 frames[i].style.background = "rgba(0,0,0,0.1)";
-                frames[i].addEventListener("mousemove", getInfo, false);
             }
+            frames[i].addEventListener("mousemove", getInfo, false);
         }
     }
 
