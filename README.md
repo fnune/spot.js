@@ -12,11 +12,16 @@
 ## Code Example
 
 Sample HTML with an activeAreaClass (with CSS class "spot-area") and three "spot" class DIVs (targetClass). Upon activation of indicators, we can see the angle and distance values being stored and displayed. The values are stored when the indicators are off too.
-![enter image description here](http://brainlessdeveloper.com/assets/spotjs1.gif)
+
+![spot.js basic sample](http://brainlessdeveloper.com/assets/spotjs1.gif)
+
 Adding <code>transform: rotate;</code> with JS and passing a <code>mouseDeg[i]</code> variable as value for the rotation:
-![enter image description here](http://brainlessdeveloper.com/assets/spotjs2.gif)
+
+![spot.js basic sample](http://brainlessdeveloper.com/assets/spotjs2.gif)
+
 Same procedure, without indicators for clarity. Notice the DIVs do not rotate when the mouse leaves the activeAreaClass DIV. This can be disabled (thus enabling mouse tracking in the entire viewport) through settings (more on settings below).
-![enter image description here](http://brainlessdeveloper.com/assets/spotjs3.gif)
+
+![spot.js basic sample](http://brainlessdeveloper.com/assets/spotjs3.gif)
 
 ----------
 ## Installation
