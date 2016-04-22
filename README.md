@@ -29,11 +29,11 @@ Coming soon: live demo on my blog and a post detailing the development process.
 ## Installation
 
 Add **spot.js** to your HTML document with a script tag:
-```
+```html
 <script src="spot.js"></script>
 ```
 And voila! The default settings will be loaded. Here's a template in case you want to change them. The whole thing should look like this:
-```
+```html
 <script>
 function setUserOpt() {
     var userOpt = {
