@@ -9,7 +9,7 @@
 - **Get creative** with mouse events using CSS transforms.
 - Hopefully more things to come!
 
-## Code Example
+## Examples
 
 Sample HTML with an activeAreaClass (with CSS class "spot-area") and three "spot" class DIVs (targetClass). Upon activation of indicators, we can see the angle and distance values being stored and displayed. The values are stored when the indicators are off too.
 
@@ -22,6 +22,8 @@ Adding <code>transform: rotate;</code> with JS and passing a <code>mouseDeg[i]</
 Same procedure, without indicators for clarity. Notice the DIVs do not rotate when the mouse leaves the activeAreaClass DIV. This can be disabled (thus enabling mouse tracking in the entire viewport) through settings (more on settings below).
 
 ![spot.js basic sample](http://brainlessdeveloper.com/assets/spotjs3.gif)
+
+Coming soon: live demo on my blog and a post detailing the development process.
 
 ----------
 ## Installation
