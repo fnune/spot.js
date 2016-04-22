@@ -53,6 +53,7 @@ This is what the different settings do:
 ##Available variables:
 - **mouseDeg**[i] - Angle between the mouse position and an element's horizontal axis in degrees.
 - **mouseDist**[i] - Distance between the mouse position and the element's center.
+
 Unfortunately these are not available in the global scope yet. As of now, they're only available inside the for loops which create them. I'll upgrade this with some time.
 
 ----------
