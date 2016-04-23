@@ -8,9 +8,18 @@
 
 function setUserOpt() {
     var userOpt = {
-        targetClass: "myTargetClass",
+        // General settings
+        // targetClass: "shadowthis",
         activeAreaClass: "myActiveAreaClass",
-        showIndicators: false
+        showIndicators: false,
+
+        //Shadow settings
+        shadowOn: true,
+        shadowBlur: 30,
+        shadowColor: "rgba(0,0,0,0.8)",
+
+        //Rotation settings
+        rotationOn: false
     };
     return userOpt;
 }
@@ -41,6 +50,26 @@ function setUserOpt() {
     } else {
         opt.showIndicators = user.showIndicators;
     }
+    if (typeof user === "undefined" || user.shadowOn === undefined) {
+        opt.shadow = false;
+    } else {
+        opt.shadowOn = user.shadowOn;
+    }
+    if (typeof user === "undefined" || user.shadowBlur === undefined) {
+        opt.shadowBlur = 30;
+    } else {
+        opt.shadowBlur = user.shadowBlur;
+    }
+    if (typeof user === "undefined" || user.shadowColor === undefined) {
+        opt.shadowColor = "rgba(0,0,0,0.6)";
+    } else {
+        opt.shadowColor = user.shadowColor;
+    }
+    if (typeof user === "undefined" || user.rotationOn === undefined) {
+        opt.rotationOn = false;
+    } else {
+        opt.rotationOn = user.rotationOn;
+    }
 
     var frames = document.getElementsByClassName(opt.activeAreaClass);
 
@@ -59,7 +88,12 @@ function setUserOpt() {
         mouseRad = [],
         mouseDeg = [],
         mouseDist = [],
-        indicator = [];
+        indicator = [],
+        theInfo = [];
+
+    var shadowBlur,
+        shadowColor,
+        shadowDist = [];
 
     function getElemDimensions() {
         for (i = 0; i < elem.length; i += 1) {
@@ -125,9 +159,16 @@ function setUserOpt() {
 
     }
 
-    function getInfo() {
+    function initiateSpot() {
         getAngle();
         getDistance();
+        if (opt.shadowOn) {
+            getShadow();
+        }
+        if (opt.rotationOn) {
+            getRotation();
+        }
+        printInfo();
     }
 
     window.addEventListener("load", function () {
@@ -149,7 +190,7 @@ function setUserOpt() {
     window.addEventListener("scroll", getElemPosition, false);
 
     if (opt.activeAreaClass === undefined || opt.activeAreaClass === window || opt.activeAreaClass === "window" || frames.length === 0) {
-        window.addEventListener("mousemove", getInfo, false);
+        window.addEventListener("mousemove", initiateSpot, false);
     } else {
         for (i = 0; i < frames.length; i += 1) {
             if (opt.showIndicators) {
@@ -157,8 +198,37 @@ function setUserOpt() {
                 frames[i].style.outlineOffset = "-15px";
                 frames[i].style.background = "rgba(0,0,0,0.1)";
             }
-            frames[i].addEventListener("mousemove", getInfo, false);
+            frames[i].addEventListener("mousemove", initiateSpot, false);
         }
+    }
+
+    function getShadow() {
+        for (i = 0; i < elem.length; i += 1) {
+            shadowDist[i] = Math.round(mouseDist[i] / opt.shadowBlur);
+            if (mouseDist[i] > 15) {
+                elem[i].style.webkitFilter = "drop-shadow(" + shadowDist[i] * -Math.round(Math.cos(mouseRad[i]) * 10) / 10 + "px " + shadowDist[i] * Math.round(Math.sin(mouseRad[i]) * 10) / 10 + "px " + shadowDist[i] + "px " + opt.shadowColor + ")";
+            } else {
+                elem[i].style.webkitFilter = "none";
+            }
+        }
+    }
+
+    function getRotation() {
+        for (i = 0; i < elem.length; i += 1) {
+            elem[i].style.transform = "rotate(" + mouseDeg[i] + "deg)";
+        }
+    }
+
+    var infoDiv = document.getElementById("CSSresult");
+
+    function printInfo() {
+        function getInfo() {
+            for (i = 0; i < elem.length; i += 1) {
+                theInfo[i] = JSON.stringify(elem[i].style.webkitFilter + elem[i].style.transform) + "<br>";
+            }
+            return theInfo;
+        }
+        infoDiv.innerHTML = getInfo();
     }
 
 }());
