@@ -14,8 +14,10 @@
 ## Live demos
 
 [Drop-shadow](http://brainlessdeveloper.com/spot.js/demos/spot.js-drop-shadow-demo.html)
-[Transform: rotate](http://brainlessdeveloper.com/spot.js/demos/spot.js-drop-shadow-demo.html)
-[Drop-shadow with debugging indicators](http://brainlessdeveloper.com/spot.js/demos/spot.js-drop-shadow-demo.html)
+
+[Transform: rotate](http://brainlessdeveloper.com/spot.js/demos/spot.js-rotation-demo.html)
+
+[Drop-shadow with debugging indicators](http://brainlessdeveloper.com/spot.js/demos/spot.js-indicators-demo.html)
 
 ## Examples
 
