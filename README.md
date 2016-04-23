@@ -33,7 +33,6 @@ Same procedure, without indicators for clarity. Notice the DIVs do not rotate wh
 
 ![spot.js basic sample](http://brainlessdeveloper.com/assets/spotjs3.gif)
 
-Coming soon: live demo on my blog and a post detailing the development process.
 
 ----------
 ## Installation
