@@ -56,7 +56,7 @@ function setUserOpt() {
         opt.shadowOn = user.shadowOn;
     }
     if (typeof user === "undefined" || user.shadowBlur === undefined) {
-        opt.shadowBlur = 30;
+        opt.shadowBlur = 70;
     } else {
         opt.shadowBlur = user.shadowBlur;
     }
@@ -83,7 +83,8 @@ function setUserOpt() {
     var mouseX,
         mouseY;
 
-    var deltaX = [],
+    var event,
+        deltaX = [],
         deltaY = [],
         mouseRad = [],
         mouseDeg = [],
@@ -127,14 +128,15 @@ function setUserOpt() {
         }
     }
 
-    function getMousePosition() {
+    function getMousePosition(event) {
+        event = event || window.event;
         mouseX = event.clientX;
         mouseY = event.clientY;
     }
 
-    function getAngle() {
+    function getAngle(event) {
 
-        getMousePosition();
+        getMousePosition(event);
 
         for (i = 0; i < elem.length; i += 1) {
             deltaX[i] = mouseX - elemX[i];
@@ -159,8 +161,8 @@ function setUserOpt() {
 
     }
 
-    function initiateSpot() {
-        getAngle();
+    function initiateSpot(event) {
+        getAngle(event);
         getDistance();
         if (opt.shadowOn) {
             getShadow();
@@ -190,7 +192,9 @@ function setUserOpt() {
     window.addEventListener("scroll", getElemPosition, false);
 
     if (opt.activeAreaClass === undefined || opt.activeAreaClass === window || opt.activeAreaClass === "window" || frames.length === 0) {
-        window.addEventListener("mousemove", initiateSpot, false);
+        window.onmousemove = function(event) {
+                initiateSpot(event);
+            }
     } else {
         for (i = 0; i < frames.length; i += 1) {
             if (opt.showIndicators) {
@@ -198,7 +202,9 @@ function setUserOpt() {
                 frames[i].style.outlineOffset = "-15px";
                 frames[i].style.background = "rgba(0,0,0,0.1)";
             }
-            frames[i].addEventListener("mousemove", initiateSpot, false);
+            frames[i].onmousemove = function(event) {
+                initiateSpot(event);
+            }
         }
     }
 

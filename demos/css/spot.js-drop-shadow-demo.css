@@ -58,7 +58,7 @@ body, html {
 	}
 
 	.spot {
-		transition:.2s all;
+		transition:all .3s;
 	}
 
 	.centertext {
