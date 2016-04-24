@@ -14,8 +14,10 @@
 ## Live demos
 
 [Drop-shadow](http://brainlessdeveloper.com/spot.js/demos/spot.js-drop-shadow-demo.html)
-[Transform: rotate](http://brainlessdeveloper.com/spot.js/demos/spot.js-drop-shadow-demo.html)
-[Drop-shadow with debugging indicators](http://brainlessdeveloper.com/spot.js/demos/spot.js-drop-shadow-demo.html)
+
+[Transform: rotate](http://brainlessdeveloper.com/spot.js/demos/spot.js-rotation-demo.html)
+
+[Drop-shadow with debugging indicators](http://brainlessdeveloper.com/spot.js/demos/spot.js-indicators-demo.html)
 
 ## Examples
 
@@ -31,7 +33,6 @@ Same procedure, without indicators for clarity. Notice the DIVs do not rotate wh
 
 ![spot.js basic sample](http://brainlessdeveloper.com/assets/spotjs3.gif)
 
-Coming soon: live demo on my blog and a post detailing the development process.
 
 ----------
 ## Installation
