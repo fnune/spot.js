@@ -24,217 +24,207 @@ function setUserOpt() {
     return userOpt;
 }
 */
-(function () {
+/*global window */
+
+var spotInstances = [];
+
+var frames = document.getElementsByClassName("spot-area");
+
+var spotShadow = document.getElementsByClassName("spot-shadow");
+var spotRotate = document.getElementsByClassName("spot-rotate");
+
+var mouseX,
+    mouseY;
+
+function getMousePosition(event) {
+    event = event || window.event;
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+}
+
+var self;
+
+function Spot(opt) {
 
     'use strict';
 
-    var user = {},
-        opt = {};
+        this.elem = document.getElementsByClassName(opt.targetClass);
+        this.elemHeight = [];
+        this.elemWidth = [];
+        this.elemX = [];
+        this.elemY = [];
+        this.deltaX = [];
+        this.deltaY = [];
+        this.mouseRad = [];
+        this.mouseDeg = [];
+        this.mouseDist = [];
+        this.indicator = [];
+        this.theInfo = [];
+        this.shadowDist = [];
 
-    if (typeof setUserOpt !== "undefined") {
-        user = setUserOpt();
-    }
+        var self = this;
 
-    if (typeof user === "undefined" || user.targetClass === undefined) {
-        opt.targetClass = "spot";
-    } else {
-        opt.targetClass = user.targetClass;
-    }
-    if (typeof user === "undefined" || user.activeAreaClass === undefined) {
-        opt.activeAreaClass = "spot-area";
-    } else {
-        opt.activeAreaClass = user.activeAreaClass;
-    }
-    if (typeof user === "undefined" || user.showIndicators === undefined) {
-        opt.showIndicators = true;
-    } else {
-        opt.showIndicators = user.showIndicators;
-    }
-    if (typeof user === "undefined" || user.shadowOn === undefined) {
-        opt.shadow = false;
-    } else {
-        opt.shadowOn = user.shadowOn;
-    }
-    if (typeof user === "undefined" || user.shadowBlur === undefined) {
-        opt.shadowBlur = 70;
-    } else {
-        opt.shadowBlur = user.shadowBlur;
-    }
-    if (typeof user === "undefined" || user.shadowColor === undefined) {
-        opt.shadowColor = "rgba(0,0,0,0.6)";
-    } else {
-        opt.shadowColor = user.shadowColor;
-    }
-    if (typeof user === "undefined" || user.rotationOn === undefined) {
-        opt.rotationOn = false;
-    } else {
-        opt.rotationOn = user.rotationOn;
-    }
-
-    var frames = document.getElementsByClassName(opt.activeAreaClass);
-
-    var elem = document.getElementsByClassName(opt.targetClass),
-        elemHeight = [],
-        elemWidth = [],
-        elemX = [],
-        elemY = [],
-        i;
-
-    var mouseX,
-        mouseY;
-
-    var event,
-        deltaX = [],
-        deltaY = [],
-        mouseRad = [],
-        mouseDeg = [],
-        mouseDist = [],
-        indicator = [],
-        theInfo = [];
-
-    var shadowBlur,
-        shadowColor,
-        shadowDist = [];
-
-    function getElemDimensions() {
-        for (i = 0; i < elem.length; i += 1) {
-            elemHeight[i] = elem[i].clientHeight;
-            elemWidth[i] = elem[i].clientWidth;
-            elemX[i] = 0;
-            elemY[i] = 0;
-        }
-    }
-
-    function getElemPosition() {
-        for (i = 0; i < elem.length; i += 1) {
-            elemX[i] = elem[i].getBoundingClientRect().left + (elemWidth[i] / 2);
-            elemY[i] = elem[i].getBoundingClientRect().top + (elemHeight[i] / 2);
-        }
-    }
-
-    function getIndicator() {
-        if (opt.showIndicators) {
-            for (i = 0; i < elem.length; i += 1) {
-                indicator[i] = document.createElement("div");
-                indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
-                document.body.appendChild(indicator[i]);
-            }
-        }
-    }
-
-    function updateIndicator() {
-        for (i = 0; i < elem.length; i += 1) {
-            indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
-        }
-    }
-
-    function getMousePosition(event) {
-        event = event || window.event;
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-    }
-
-    function getAngle(event) {
-
-        getMousePosition(event);
-
-        for (i = 0; i < elem.length; i += 1) {
-            deltaX[i] = mouseX - elemX[i];
-            deltaY[i] = elemY[i] - mouseY;
-            mouseRad[i] = Math.atan2(deltaY[i], deltaX[i]);
-            mouseDeg[i] = -Math.round(mouseRad[i] * 18000 / Math.PI) / 100;
-            if (mouseDeg[i] <= 0) {
-                mouseDeg[i] += 360;
-            }
-            if (opt.showIndicators && indicator[i] !== undefined) {
-                indicator[i].innerHTML = "<p style='display:table-cell; vertical-align:middle;'>" + mouseDeg[i] + "º<br>" + mouseDist[i] + "px</p>";
+        this.getElemDimensions = function() {
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.elemHeight[i] = self.elem[i].clientHeight;
+                self.elemWidth[i] = self.elem[i].clientWidth;
+                self.elemX[i] = 0;
+                self.elemY[i] = 0;
             }
         }
 
-    }
-
-    function getDistance() {
-
-        for (i = 0; i < elem.length; i += 1) {
-            mouseDist[i] = Math.round(Math.sqrt(Math.pow(deltaX[i], 2) + Math.pow(deltaY[i], 2)));
-        }
-
-    }
-
-    function initiateSpot(event) {
-        getAngle(event);
-        getDistance();
-        if (opt.shadowOn) {
-            getShadow();
-        }
-        if (opt.rotationOn) {
-            getRotation();
-        }
-        printInfo();
-    }
-
-    window.addEventListener("load", function () {
-        getElemDimensions();
-        getElemPosition();
-        if (opt.showIndicators) {
-            getIndicator();
-        }
-    }, false);
-
-    window.addEventListener("resize", function () {
-        getElemDimensions();
-        getElemPosition();
-        if (opt.showIndicators) {
-            updateIndicator();
-        }
-    }, false);
-
-    window.addEventListener("scroll", getElemPosition, false);
-
-    if (opt.activeAreaClass === undefined || opt.activeAreaClass === window || opt.activeAreaClass === "window" || frames.length === 0) {
-        window.onmousemove = function(event) {
-                initiateSpot(event);
+        this.getElemPosition = function() {
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.elemX[i] = self.elem[i].getBoundingClientRect().left + (self.elemWidth[i] / 2);
+                self.elemY[i] = self.elem[i].getBoundingClientRect().top + (self.elemHeight[i] / 2);
             }
-    } else {
-        for (i = 0; i < frames.length; i += 1) {
+        }
+
+        this.getIndicator = function() {
             if (opt.showIndicators) {
-                frames[i].style.outline = "15px dashed rgba(255,0,0,0.2)";
-                frames[i].style.outlineOffset = "-15px";
-                frames[i].style.background = "rgba(0,0,0,0.1)";
-            }
-            frames[i].onmousemove = function(event) {
-                initiateSpot(event);
+                for (var i = 0; i < self.elem.length; i += 1) {
+                    self.indicator[i] = document.createElement("div");
+                    self.indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + self.elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + self.elem[i].getBoundingClientRect().top) + "px; height:" + self.elemHeight[i] + "px; width:" + self.elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
+                    document.body.appendChild(self.indicator[i]);
+                }
             }
         }
+
+        this.updateIndicator = function() {
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + self.elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + self.elem[i].getBoundingClientRect().top) + "px; height:" + self.elemHeight[i] + "px; width:" + self.elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
+            }
+        }
+
+        this.getAngle = function(event) {
+
+            getMousePosition(event);
+
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.deltaX[i] = mouseX - self.elemX[i];
+                self.deltaY[i] = self.elemY[i] - mouseY;
+                self.mouseRad[i] = Math.atan2(self.deltaY[i], self.deltaX[i]);
+                self.mouseDeg[i] = -Math.round(self.mouseRad[i] * 18000 / Math.PI) / 100;
+                if (self.mouseDeg[i] <= 0) {
+                    self.mouseDeg[i] += 360;
+                }
+                if (opt.showIndicators && self.indicator[i] !== undefined) {
+                    self.indicator[i].innerHTML = "<p style='display:table-cell; vertical-align:middle;'>" + self.mouseDeg[i] + "º<br>" + self.mouseDist[i] + "px</p>";
+                }
+            }
+
+        }
+
+        this.getDistance = function() {
+
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.mouseDist[i] = Math.round(Math.sqrt(Math.pow(self.deltaX[i], 2) + Math.pow(self.deltaY[i], 2)));
+            }
+
+        }
+
+        this.initiateSpot = function(event) {
+            self.getAngle(event);
+            self.getDistance();
+            if (opt.shadowOn) {
+                self.getShadow();
+            }
+            if (opt.rotationOn) {
+                self.getRotation();
+            }
+        }
+
+        window.addEventListener("load", function () {
+            self.getElemDimensions();
+            self.getElemPosition();
+            if (opt.showIndicators) {
+                self.getIndicator();
+            }
+        }, false);
+
+        window.addEventListener("resize", function () {
+            self.getElemDimensions();
+            self.getElemPosition();
+            if (opt.showIndicators) {
+                self.updateIndicator();
+            }
+        }, false);
+
+        window.addEventListener("scroll", self.getElemPosition, false);
+
+        if (opt.activeAreaClass === undefined || opt.activeAreaClass === window || opt.activeAreaClass === "window" || frames.length === 0) {
+            window.onmousemove = function(event) {
+                    self.initiateSpot(event);
+            }
+        } else {
+            for (var i = 0; i < frames.length; i += 1) {
+                if (opt.showIndicators) {
+                    frames[i].style.outline = "15px dashed rgba(255,0,0,0.2)";
+                    frames[i].style.outlineOffset = "-15px";
+                    frames[i].style.background = "rgba(0,0,0,0.1)";
+                }
+                frames[i].onmousemove = function(event) {
+                    self.initiateSpot(event);
+                }
+            }
+        }
+
+        this.getShadow = function() {
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.shadowDist[i] = Math.round(self.mouseDist[i] / opt.shadowBlur);
+                if (self.mouseDist[i] > 15) {
+                    self.elem[i].style.webkitFilter = "drop-shadow(" + self.shadowDist[i] * -Math.round(Math.cos(self.mouseRad[i]) * 10) / 10 + "px " + self.shadowDist[i] * Math.round(Math.sin(self.mouseRad[i]) * 10) / 10 + "px " + self.shadowDist[i] + "px " + opt.shadowColor + ")";
+                } else {
+                    self.elem[i].style.webkitFilter = "none";
+                }
+            }
+        }
+
+        this.getRotation = function() {
+            for (var i = 0; i < self.elem.length; i += 1) {
+                self.elem[i].style.transform = "rotate(" + self.mouseDeg[i] + "deg)";
+            }
+        }
+};
+
+(function spotRotateApp() {
+
+    if (spotRotate.length != 0) {
+        spotInstances.push(spotRotate);    
+        var rotateConfig = {
+            // General settings
+            targetClass: "spot-rotate",
+            showIndicators: false,
+
+            //Shadow settings
+            shadowOn: false,
+
+            //Rotation settings
+            rotationOn: true
+        }
+        var spotRotateInstance = new Spot(rotateConfig);
     }
 
-    function getShadow() {
-        for (i = 0; i < elem.length; i += 1) {
-            shadowDist[i] = Math.round(mouseDist[i] / opt.shadowBlur);
-            if (mouseDist[i] > 15) {
-                elem[i].style.webkitFilter = "drop-shadow(" + shadowDist[i] * -Math.round(Math.cos(mouseRad[i]) * 10) / 10 + "px " + shadowDist[i] * Math.round(Math.sin(mouseRad[i]) * 10) / 10 + "px " + shadowDist[i] + "px " + opt.shadowColor + ")";
-            } else {
-                elem[i].style.webkitFilter = "none";
-            }
-        }
-    }
+}());
 
-    function getRotation() {
-        for (i = 0; i < elem.length; i += 1) {
-            elem[i].style.transform = "rotate(" + mouseDeg[i] + "deg)";
-        }
-    }
+(function spotShadowApp() {
 
-    var infoDiv = document.getElementById("CSSresult");
+    if (spotShadow.length != 0) {
+        spotInstances.push(spotShadow);
+        var shadowConfig = {
+            // General settings
+            targetClass: "spot-shadow",
+            showIndicators: false,
 
-    function printInfo() {
-        function getInfo() {
-            for (i = 0; i < elem.length; i += 1) {
-                theInfo[i] = JSON.stringify(elem[i].style.webkitFilter + elem[i].style.transform) + "<br>";
-            }
-            return theInfo;
+            //Shadow settings
+            shadowOn: true,
+            shadowBlur: 30,
+            shadowColor: "rgba(0,0,0,0.8)",
+
+            //Rotation settings
+            rotationOn: false
         }
-        infoDiv.innerHTML = getInfo();
+        var spotShadowInstance = new Spot(shadowConfig);
     }
 
 }());
