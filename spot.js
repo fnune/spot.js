@@ -28,47 +28,20 @@ function setUserOpt() {
 
     'use strict';
 
-    var user = {},
-        opt = {};
+    var user = setUserOpt ? setUserOpt() : {},
+        opt = {
+            targetClass: user.targetClass || "spot",
+            activeAreaClass: user.activeAreaClass || "spot-area",
+            showIndicators: user.showIndicators || false,
+            shadowBlur: user.shadowBlur || 70,
+            shadowColor: user.shadowColor || "rgba(0,0,0,0.6)",
+            rotationOn: user.rotationOn || false
+        };
 
-    if (typeof setUserOpt !== "undefined") {
-        user = setUserOpt();
-    }
-
-    if (typeof user === "undefined" || user.targetClass === undefined) {
-        opt.targetClass = "spot";
-    } else {
-        opt.targetClass = user.targetClass;
-    }
-    if (typeof user === "undefined" || user.activeAreaClass === undefined) {
-        opt.activeAreaClass = "spot-area";
-    } else {
-        opt.activeAreaClass = user.activeAreaClass;
-    }
-    if (typeof user === "undefined" || user.showIndicators === undefined) {
-        opt.showIndicators = true;
-    } else {
-        opt.showIndicators = user.showIndicators;
-    }
-    if (typeof user === "undefined" || user.shadowOn === undefined) {
-        opt.shadow = false;
-    } else {
+    if (user.shadowOn) {
         opt.shadowOn = user.shadowOn;
-    }
-    if (typeof user === "undefined" || user.shadowBlur === undefined) {
-        opt.shadowBlur = 70;
     } else {
-        opt.shadowBlur = user.shadowBlur;
-    }
-    if (typeof user === "undefined" || user.shadowColor === undefined) {
-        opt.shadowColor = "rgba(0,0,0,0.6)";
-    } else {
-        opt.shadowColor = user.shadowColor;
-    }
-    if (typeof user === "undefined" || user.rotationOn === undefined) {
-        opt.rotationOn = false;
-    } else {
-        opt.rotationOn = user.rotationOn;
+        opt.shadow = false;
     }
 
     var frames = document.getElementsByClassName(opt.activeAreaClass);
@@ -83,8 +56,7 @@ function setUserOpt() {
     var mouseX,
         mouseY;
 
-    var event,
-        deltaX = [],
+    var deltaX = [],
         deltaY = [],
         mouseRad = [],
         mouseDeg = [],
@@ -92,9 +64,7 @@ function setUserOpt() {
         indicator = [],
         theInfo = [];
 
-    var shadowBlur,
-        shadowColor,
-        shadowDist = [];
+    var shadowDist = [];
 
     function getElemDimensions() {
         for (i = 0; i < elem.length; i += 1) {
@@ -106,25 +76,40 @@ function setUserOpt() {
     }
 
     function getElemPosition() {
+        var boundingClientRect;
         for (i = 0; i < elem.length; i += 1) {
-            elemX[i] = elem[i].getBoundingClientRect().left + (elemWidth[i] / 2);
-            elemY[i] = elem[i].getBoundingClientRect().top + (elemHeight[i] / 2);
+            boundingClientRect = elem[i].getBoundingClientRect();
+            elemX[i] = boundingClientRect.left + (elemWidth[i] / 2);
+            elemY[i] = boundingClientRect.top + (elemHeight[i] / 2);
         }
     }
 
     function getIndicator() {
+        var boundingClientRect,
+          documentFragment;
         if (opt.showIndicators) {
+
+            documentFragment = document.createDocumentFragment();
             for (i = 0; i < elem.length; i += 1) {
+                boundingClientRect = elem[i].getBoundingClientRect();
                 indicator[i] = document.createElement("div");
-                indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
-                document.body.appendChild(indicator[i]);
+                indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + boundingClientRect.left) + "px; top:" + (window.scrollY + boundingClientRect.top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
+                documentFragment.appendChild(indicator[i]);
             }
+
+          /**
+           * Appending divs to the document.body can be costly. Instead, we can append everything to a documentFragment
+           * (which doesn't do a reflow until you finally append it)
+           */
+          document.body.appendChild(documentFragment);
         }
     }
 
     function updateIndicator() {
+        var boundingClientRect;
         for (i = 0; i < elem.length; i += 1) {
-            indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + elem[i].getBoundingClientRect().left) + "px; top:" + (window.scrollY + elem[i].getBoundingClientRect().top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
+            boundingClientRect = elem[i].getBoundingClientRect();
+            indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + boundingClientRect.left) + "px; top:" + (window.scrollY + boundingClientRect.top) + "px; height:" + elemHeight[i] + "px; width:" + elemWidth[i] + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
         }
     }
 
@@ -191,10 +176,10 @@ function setUserOpt() {
 
     window.addEventListener("scroll", getElemPosition, false);
 
-    if (opt.activeAreaClass === undefined || opt.activeAreaClass === window || opt.activeAreaClass === "window" || frames.length === 0) {
-        window.onmousemove = function(event) {
-                initiateSpot(event);
-            }
+    if (!opt.activeAreaClass || opt.activeAreaClass === window || opt.activeAreaClass === "window" || !frames.length) {
+
+        window.addEventListener('mousemove', initiateSpot);
+
     } else {
         for (i = 0; i < frames.length; i += 1) {
             if (opt.showIndicators) {
@@ -202,9 +187,7 @@ function setUserOpt() {
                 frames[i].style.outlineOffset = "-15px";
                 frames[i].style.background = "rgba(0,0,0,0.1)";
             }
-            frames[i].onmousemove = function(event) {
-                initiateSpot(event);
-            }
+            frames[i].addEventListener('mousemove', initiateSpot);
         }
     }
 

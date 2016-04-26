@@ -57,9 +57,7 @@ body, html {
 		width:530px;
 	}
 
-	.spot {
-		transition:all .3s;
-	}
+	.spot {}
 
 	.centertext {
 		position:absolute;
