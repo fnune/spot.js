@@ -1,13 +1,49 @@
-/*global window */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>spot.js - Demo</title>
+	<link rel="stylesheet" href="css/spot.js-demo.css">
+</head>
+<body>
+<div id="circle1" class="circle spot-shadow"><div class="centertext">spot.js</div></div>
+<div id="circle2" class="circledown spot-shadow"></div>
+<a class="backtopost" href="http://brainlessdeveloper.com/mouse-move-interaction-spot-js/">spot.js blog post<img class="spot" src="http://brainlessdeveloper.com/wp-content/themes/brainless/images/favicon.png" alt=""></a>
+<a href="https://github.com/brainlessdeveloper/spot.js" class="backtopost two">GitHub repo<img src="http://brainlessdeveloper.com/wp-content/uploads/2016/04/social-github.png" alt="" class="spot"></a>
+<div class="octocat spot-shadow"></div>
+<div class="controls spot-shadow">
+	<p style="color:grey; font-weight:400;">This demo is resource intensive due to the amount of elements being processed. Works best on Google Chrome.</p><div class="divider"></div>
+	<label style="font-weight:600; margin-bottom:16px;" for="shadowblur">Shadow distance:</label><input id="shadowblur" type="range" min="10" max="200" value="30"><div class="divider"></div>
+	<p>Inner circle controls:</p>
+	<label for="innershadow">Dynamic drop-shadow</label><input id="innershadow" name="innereffect" value="shadow" type="radio">
+	<label for="innerrotation">Transform: rotate</label><input id="innerrotation" name="innereffect" value="rotation" type="radio">
+	<label for="innerindicator">Show indicators</label><input id="innerindicator" type="checkbox">
+<div class="divider"></div>
+	<p>Outer circle controls:</p>
+	<label for="outershadow">Dynamic drop-shadow</label><input id="outershadow" name="outereffect" value="shadow" type="radio">
+	<label for="outerrotation">Transform: rotate</label><input id="outerrotation" name="outereffect" value="rotation" type="radio">
+	<label for="outerindicator">Show indicators</label><input id="outerindicator" type="checkbox">
+</div>
+<script>
 (function () {
 
     'use strict';
 
-    var spotAreaElem = document.getElementsByClassName("spot-area"),
-        spotShadowElem = document.getElementsByClassName("spot-shadow"),
-        spotRotateElem = document.getElementsByClassName("spot-rotate"),
-        spotIndicatorElem = document.getElementsByClassName("spot-indicator"),
-        indicatorOverlays = document.getElementsByClassName("spot-indicator-overlay"),
+    var spotAreaElem,
+    	spotIndicatorElem,
+        spotShadowElem,
+        spotRotateElem;
+
+    function getSpotElems() {
+		spotAreaElem = document.getElementsByClassName("spot-area");
+        spotShadowElem = document.getElementsByClassName("spot-shadow");
+        spotRotateElem = document.getElementsByClassName("spot-rotate");
+        spotIndicatorElem = document.getElementsByClassName("spot-indicator");
+    }
+
+    getSpotElems();
+
+    var indicatorOverlays = document.getElementsByClassName("spot-indicator-overlay"),
         spotShadowInstance = [],
         spotRotateInstance = [],
         spotIndicatorInstance = [],
@@ -116,6 +152,10 @@
 
     /* Because we don't want new instances taking positions of already rotated elements */
     function clearAllEffects() {
+        for (i = 0; i < spotShadowInstance.length; i += 1) {
+            spotShadowInstance[i].elem.style.filter = "none";
+            spotShadowInstance[i].elem.style.webkitFilter = "none";
+        }
         for (i = 0; i < spotRotateInstance.length; i += 1) {
             spotRotateInstance[i].elem.style.transform = "rotate(0deg)";
         }
@@ -157,4 +197,101 @@
             createSpotInstances();
         }, 50);
     };
+
+function killSpot() {
+	spotIndicatorInstance = [];
+	spotShadowInstance = [];
+	spotRotateInstance = [];
+}
+
+var innerCircle = document.getElementById("circle1"),
+	outerCircle = document.getElementById("circle2");
+
+var innerShadow = document.getElementById("innershadow"),
+	innerRotation = document.getElementById("innerrotation"),
+	innerIndicator = document.getElementById("innerindicator"),
+	outerShadow = document.getElementById("outershadow"),
+	outerRotation = document.getElementById("outerrotation"),
+	outerIndicator = document.getElementById("outerindicator"),
+	shadowBlurControl = document.getElementById("shadowblur");
+
+shadowBlurControl.onchange = function() {
+	shadowBlur = shadowBlurControl.value;
+}
+
+innerShadow.checked = true;
+outerShadow.checked = true;
+
+innerIndicator.onchange = function() {
+	if (innerIndicator.checked) {
+		innerCircle.classList.add("spot-indicator");
+	} else {
+		innerCircle.classList.remove("spot-indicator");
+	}
+	getSpotElems();
+	clearAllEffects();
+	killSpot();
+	createSpotInstances();
+};
+
+outerIndicator.onchange = function() {
+	if (outerIndicator.checked) {
+		outerCircle.classList.add("spot-indicator");
+	} else {
+		outerCircle.classList.remove("spot-indicator");
+	}
+	getSpotElems();
+	clearAllEffects();
+	killSpot();
+	createSpotInstances();
+};
+
+innerShadow.onchange = function() {
+	clearAllEffects();
+	killSpot();
+	if (innerShadow.checked) {
+		innerCircle.classList.add("spot-shadow");
+		innerCircle.classList.remove("spot-rotate");
+	}
+	getSpotElems();
+	createSpotInstances();
+};
+
+innerRotation.onchange = function() {
+	clearAllEffects();
+	killSpot();
+	if (innerRotation.checked) {
+		innerCircle.classList.add("spot-rotate");
+		innerCircle.classList.remove("spot-shadow");
+	}
+	getSpotElems();
+	createSpotInstances();
+};
+
+outerShadow.onchange = function() {
+	clearAllEffects();
+	killSpot();
+	if (outerShadow.checked) {
+		outerCircle.classList.add("spot-shadow");
+		outerCircle.classList.remove("spot-rotate");
+	}
+	getSpotElems();
+	createSpotInstances();
+};
+
+outerRotation.onchange = function() {
+	clearAllEffects();
+	killSpot();
+	if (outerRotation.checked) {
+		outerCircle.classList.add("spot-rotate");
+		outerCircle.classList.remove("spot-shadow");
+	}
+	getSpotElems();
+	createSpotInstances();
+};
+
 }());
+
+</script>
+</body>
+</html>
