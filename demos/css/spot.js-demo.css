@@ -59,9 +59,11 @@ body, html {
 		vertical-align:middle;
 		border-radius:50%;
 		will-change:transform;
+		transition:.2s all ease;
 	}
 
 	.circledown {
+		transition:.2s all ease;
 		padding:0;
 		display:block;
 		position:absolute;
