@@ -1,4 +1,3 @@
-/* GET ELEMENTS WITH SPOT-EFFECT CLASSES AND ARRANGE THEM IN ELEM OBJECT */
 var spotAreaElem = document.getElementsByClassName("spot-area"),
 	spotShadowElem = document.getElementsByClassName("spot-shadow"),
 	spotRotateElem = document.getElementsByClassName("spot-rotate"),
@@ -14,7 +13,8 @@ var spotAreaElem = document.getElementsByClassName("spot-area"),
 	elems = {
 		spotShadow: spotShadowElem,
 		spotRotate: spotRotateElem,
-		spotIndicator: spotIndicatorElem
+		spotIndicator: spotIndicatorElem,
+		spotArea: spotAreaElem
 	},
 	i;
 var mouseX,
@@ -78,6 +78,11 @@ function createSpotInstances() {
 	    indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + spotIndicatorInstance[i].elem.getBoundingClientRect().left) + "px; top:" + (window.scrollY + spotIndicatorInstance[i].elem.getBoundingClientRect().top) + "px; height:" + spotIndicatorInstance[i].elem.offsetHeight + "px; width:" + spotIndicatorInstance[i].elem.offsetWidth + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
 	    document.body.appendChild(indicator[i]);
 	}
+	for (i = 0; i < elems.spotArea.length; i += 1) {
+        elems.spotArea[i].style.outline = "15px dashed rgba(255,0,0,0.2)";
+        elems.spotArea[i].style.outlineOffset = "-15px";
+        elems.spotArea[i].style.background = "rgba(0,0,0,0.1)";
+	}
 }
 
 /* Initiates the effects, this is tied to the mousemove event */
@@ -117,10 +122,19 @@ function clearAllEffects() {
 
 /* EVENT LISTENERS */
 
-window.onmousemove = throttle(1000 / spotFPS, function(event) {
-	initiateSpotEffects(event);
-	updateIndicatorInfo();
-});
+if (elems.spotArea[0]) {
+	for (i = 0; i < elems.spotArea.length; i += 1) {
+		elems.spotArea[i].onmousemove = throttle(1000 / spotFPS, function(event) {
+			initiateSpotEffects(event);
+			updateIndicatorInfo();
+		});
+	}
+} else {
+	window.onmousemove = throttle(1000 / spotFPS, function(event) {
+		initiateSpotEffects(event);
+		updateIndicatorInfo();
+	});
+}
 
 window.onload = function() {
 	createSpotInstances();
