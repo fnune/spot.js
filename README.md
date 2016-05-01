@@ -1,5 +1,3 @@
-![spot.js Drop-Shadow Dynamic Filter](http://brainlessdeveloper.com/wp-content/uploads/2016/05/spotjsdemo.jpg)
-
 # spot.js
 
 **Track mouse position relative to elements in your website.** With spot.js, you can:
@@ -21,7 +19,7 @@ Add **spot.js** to your HTML document with a script tag:
 <script src="spot.js"></script>
 ```
 And voila! Now you can add the following classes to any element on your website to create different effects:
-- **spot-shadow**: gives the element a **dynamic drop-shadow** filter which changes on mouse move, to simulate a light coming from your mouse cursor.
+- **spot-shadow**: gives the element a **dynamic drop-shadow** filter which changes on mouse move, to simulate a light coming from your mouse cursor. Uses `filter: drop-shadow();`
 - **spot-rotate**: this CSS class **rotates** the element to face your mouse cursor and updates on mouse move. Uses `transform: rotate;`
 - **spot-indicator**: this adds helpful **debugging overlays** to the selected element. The info shown stands for distance between the mouse cursor and the element's center and the degree (related to the horizontal axis from the center of the element) at which your mouse cursor stands in every instant.
 - **spot-area**: add this CSS class to any element to restrict where **spot.js** will listen to mouse move events. If no element has been given this class, the entire window will listen to mouse move events.
