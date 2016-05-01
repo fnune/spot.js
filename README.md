@@ -1,4 +1,4 @@
-![spot.js Drop-Shadow Dynamic Filter](http://brainlessdeveloper.com/wp-content/uploads/2016/05/spotjsdemo.jpg"spot.js Drop-Shadow Dynamic Filter")
+![spot.js Drop-Shadow Dynamic Filter](http://brainlessdeveloper.com/wp-content/uploads/2016/05/spotjsdemo.jpg)
 
 # spot.js
 
