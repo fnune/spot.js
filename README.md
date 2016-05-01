@@ -5,7 +5,7 @@
 - Add the CSS class "spot-rotate" to any element on a website to automatically rotate an element to face wherever the mouse is.
 - Track mouse angle relative to an element's horizontal axis.
 - Track mouse distance relative to an element's center.
-- Have an easy time developing with on-screen helpers by adding the CSS class "spot-indicator" to any element on a website..
+- Have an easy time developing with on-screen helpers by adding the CSS class "spot-indicator" to any element on a website.
 - **Get creative** with mouse events using CSS transforms.
 
 ## Live demos
