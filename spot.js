@@ -1,12 +1,16 @@
 /* GET ELEMENTS WITH SPOT-EFFECT CLASSES AND ARRANGE THEM IN ELEM OBJECT */
-var spotShadowElem = document.getElementsByClassName("spot-shadow"),
+var spotAreaElem = document.getElementsByClassName("spot-area"),
+	spotShadowElem = document.getElementsByClassName("spot-shadow"),
 	spotRotateElem = document.getElementsByClassName("spot-rotate"),
 	spotIndicatorElem = document.getElementsByClassName("spot-indicator"),
+	indicatorOverlays = document.getElementsByClassName("spot-indicator-overlay"),
 	spotShadowInstance = [],
 	spotRotateInstance = [],
 	spotIndicatorInstance = [],
 	shadowDist = [],
 	indicator = [],
+	scrollTimer = null,
+	spotFPS = 60,
 	elems = {
 		spotShadow: spotShadowElem,
 		spotRotate: spotRotateElem,
@@ -16,19 +20,32 @@ var spotShadowElem = document.getElementsByClassName("spot-shadow"),
 var mouseX,
 	mouseY;
 
-/* GET ANGLE FROM CURSOR TO ELEMENT HORIZONTAL AXIS */
+/* Pretty obvious what this does */
 function getMousePosition(event) {
 	mouseX = event.clientX;
 	mouseY = event.clientY;
 }
 
-/* DEFINE ELEMENT CONSTRUCTOR */
+/* Reduce the amount of times onmousemove functions are fired */
+/* Credit: http://blogorama.nerdworks.in/javascriptfunctionthrottlingan/ */
+function throttle(delay, callback) {
+    var previousCall = new Date().getTime();
+    return function() {
+        var time = new Date().getTime();
+        if ((time - previousCall) >= delay) {
+            previousCall = time;
+            callback.apply(null, arguments);
+        }
+    }
+}
+
+/* Gets basic element info and calculates mouse-related variables */
 function SpotInstance(elem) {
 	this.elem = elem;
-	const elemX = window.scrollX + elem.getBoundingClientRect().left + (elem.offsetWidth / 2);
-	const elemY = window.scrollY + elem.getBoundingClientRect().top + (elem.offsetHeight / 2);
+	this.elemX = elem.getBoundingClientRect().left + (elem.offsetWidth / 2);
+	this.elemY = elem.getBoundingClientRect().top + (elem.offsetHeight / 2);
 	this.getRadians = function() {
-		var rad = Math.atan2(elemY - mouseY, mouseX - elemX);
+		var rad = Math.atan2(this.elemY - mouseY, mouseX - this.elemX);
 		return rad;
 	}
 	this.getAngle = function() {
@@ -39,12 +56,12 @@ function SpotInstance(elem) {
 		return angle;
 	}
 	this.getDistance = function() {
-		var dist = Math.round(Math.sqrt(Math.pow(mouseX - elemX, 2) + Math.pow(elemY - mouseY, 2)));
+		var dist = Math.round(Math.sqrt(Math.pow(mouseX - this.elemX, 2) + Math.pow(this.elemY - mouseY, 2)));
 		return dist;
 	}
 }
 
-/* CREATE INSTANCES OF SELECTED ELEMENTS */
+/* Creates new instances for each of the elements with a relevant selector */
 function createSpotInstances() {
 	for (i = 0; i < elems.spotIndicator.length; i += 1) {
 		spotIndicatorInstance[i] = new SpotInstance(elems.spotIndicator[i]);
@@ -58,20 +75,22 @@ function createSpotInstances() {
 	for (i = 0; i < spotIndicatorInstance.length; i += 1) {
 	    indicator[i] = document.createElement("div");
 	    indicator[i].className = "spot-indicator-overlay";
-	    indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + spotIndicatorInstance[i].elem.getBoundingClientRect().left) + "px; top:" + (window.scrollY + spotIndicatorInstance[i].elem.getBoundingClientRect().top) + "px; height:" + spotIndicatorInstance[i].elem.clientHeight + "px; width:" + spotIndicatorInstance[i].elem.clientWidth + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
+	    indicator[i].style.cssText = "display:table; position:absolute; pointer-events:none; left:" + (window.scrollX + spotIndicatorInstance[i].elem.getBoundingClientRect().left) + "px; top:" + (window.scrollY + spotIndicatorInstance[i].elem.getBoundingClientRect().top) + "px; height:" + spotIndicatorInstance[i].elem.offsetHeight + "px; width:" + spotIndicatorInstance[i].elem.offsetWidth + "px; color:white; text-align:center; font-weight:600; font-family:Arial; z-index:999999; outline:15px solid rgba(0,200,0,0.3); outline-offset:-15px; background:rgba(0,0,0,0.2);";
 	    document.body.appendChild(indicator[i]);
 	}
 }
 
-/* DEFINE AND APPLY THE DIFFERENT EFFECTS */
+/* Initiates the effects, this is tied to the mousemove event */
 function initiateSpotEffects(event) {
 	getMousePosition(event);
 	for (i = 0; i < spotShadowInstance.length; i += 1) {
         shadowDist[i] = Math.round(spotShadowInstance[i].getDistance() / 30);
         if (spotShadowInstance[i].getDistance() > 15) {
             spotShadowInstance[i].elem.style.webkitFilter = "drop-shadow(" + shadowDist[i] * -Math.round(Math.cos(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] * Math.round(Math.sin(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] + "px rgba(0,0,0,0.8))";
+            spotShadowInstance[i].elem.style.filter = "drop-shadow(" + shadowDist[i] * -Math.round(Math.cos(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] * Math.round(Math.sin(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] + "px rgba(0,0,0,0.8))";
         } else {
             spotShadowInstance[i].elem.style.webkitFilter = "none";
+            spotShadowInstance[i].elem.style.filter = "none";
         }
 	}
 	for (i = 0; i < spotRotateInstance.length; i += 1) {
@@ -79,24 +98,29 @@ function initiateSpotEffects(event) {
 	}
 }
 
-/* CLEAR ALL EFFECTS SO THEY DON'T INTERFERE WITH NEW ONES */
+/* This is tied to the mousemove event */
+function updateIndicatorInfo() {
+	for (i = 0; i < spotIndicatorInstance.length; i += 1) {
+		indicator[i].innerHTML = spotIndicatorInstance[i].getDistance() + "px " + spotIndicatorInstance[i].getAngle() + "º";
+	}
+}
+
+/* Because we don't want new instances taking positions of already rotated elements */
 function clearAllEffects() {
-	for (i = 0; i < spotShadowInstance.length; i += 1) {
-        spotShadowInstance[i].elem.style.webkitFilter = "none";
-	}
 	for (i = 0; i < spotRotateInstance.length; i += 1) {
-		spotRotateInstance[i].elem.style.transform = "none";
+		spotRotateInstance[i].elem.style.transform = "rotate(0deg)";
 	}
-	var indicatorOverlays = document.getElementsByClassName("spot-indicator-overlay");
-	for (i = 0; i < indicatorOverlays.length; i += 1) {
-		indicatorOverlays[i].parentNode.removeChild(indicatorOverlays[i]);
+	while(indicatorOverlays[0]) {
+		indicatorOverlays[0].parentNode.removeChild(indicatorOverlays[0]);
 	}
 }
 
 /* EVENT LISTENERS */
-window.onmousemove = function(event) {
+
+window.onmousemove = throttle(1000 / spotFPS, function(event) {
 	initiateSpotEffects(event);
-}
+	updateIndicatorInfo();
+});
 
 window.onload = function() {
 	createSpotInstances();
@@ -107,7 +131,12 @@ window.onresize = function() {
 	createSpotInstances();
 }
 
-/*
-window.onscroll = function(event) {
-	initiateSpotEffects(event);
-}*/
+window.onscroll = function() {
+	if(scrollTimer !== null) {
+		clearTimeout(scrollTimer);
+	}
+	scrollTimer = setTimeout(function() {
+		clearAllEffects();
+		createSpotInstances();
+	}, 50);
+}
