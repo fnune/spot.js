@@ -6,7 +6,7 @@ body, html {
 		margin:0;
 		padding:0;
 		overflow:hidden;
-		background:white;
+		background:#FFF;
 	}
 
 	.backtopost {
@@ -32,11 +32,16 @@ body, html {
 		right:-30px;
 		position:absolute;
 		opacity:0.2;
-		transition:opacity 2s ease;
+		transition:opacity 2s ease-out;
 	}
 
 	.backtopost:hover img {
 		opacity:1;
+	}
+
+	.spot-perspective {
+		transition:.2s all ease-out;
+		overflow:visible !important;
 	}
 
 	.centertext {
@@ -59,11 +64,9 @@ body, html {
 		vertical-align:middle;
 		border-radius:50%;
 		will-change:transform;
-		transition:.2s all ease;
 	}
 
 	.circledown {
-		transition:.2s all ease;
 		padding:0;
 		display:block;
 		position:absolute;
@@ -87,7 +90,8 @@ body, html {
 	}
 
 	#circle1 {
-		background:#FFFFFF;
+		background:transparent;
+		border:20px solid rgba(0,0,0,0.1);
 		left:calc(50% - 200px);
 		top:calc(50% - 200px);
 		width:400px;
@@ -96,7 +100,8 @@ body, html {
 	}
 
 	#circle2 {
-		background:#FFFFFF;
+		background:transparent;
+		border:20px solid rgba(0,0,0,0.1);
 		left:calc(50% - 350px);
 		top:calc(50% - 350px);
 		width:700px;
