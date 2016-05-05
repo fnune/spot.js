@@ -1,0 +1,28 @@
+{
+  "name": "spot.js",
+  "version": "1.0.0",
+  "description": "Easily implement mouse event related effects on your website.",
+  "main": "spot.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brainlessdeveloper/spot.js.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "mousemove",
+    "effect",
+    "plugin"
+  ],
+  "author": "Fausto Núñez Alberro <fausto.nunez@outlook.com> (http://brainlessdeveloper.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brainlessdeveloper/spot.js/issues"
+  },
+  "homepage": "https://github.com/brainlessdeveloper/spot.js#readme"
+}
