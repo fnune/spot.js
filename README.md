@@ -14,6 +14,11 @@
 
 ## Installation
 
+You can download **spot.js** from this repository or if you use **npm**:
+```bash
+npm install spot.js
+```
+
 Add **spot.js** to your HTML document with a script tag:
 ```html
 <script src="spot.js"></script>
