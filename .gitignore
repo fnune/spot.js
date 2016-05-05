@@ -2,3 +2,4 @@ tests/*
 spot.js.old
 .DS_Store
 demos/*
+npm-debug.log
