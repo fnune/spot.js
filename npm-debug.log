@@ -1,0 +1,43 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/n/versions/node/6.0.0/bin/node',
+1 verbose cli   '/usr/bin/npm',
+1 verbose cli   'publish',
+1 verbose cli   'spot.js' ]
+2 info using npm@2.15.0
+3 info using node@v6.0.0
+4 verbose publish [ 'spot.js' ]
+5 silly cache add args [ 'spot.js', null ]
+6 verbose cache add spec spot.js
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: 'spot.js',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: 'spot.js',
+7 silly cache add   spec: '/var/www/html/spot.js/spot.js',
+7 silly cache add   type: 'local' }
+8 silly addLocalTarball shasum (computed) 2336c7720185fc8edb1260fa09d7671d70a301da
+9 verbose addTmpTarball /var/www/html/spot.js/spot.js not in flight; adding
+10 verbose correctMkdir /home/fausto/.npm correctMkdir not in flight; initializing
+11 verbose addTmpTarball validating metadata from /var/www/html/spot.js/spot.js
+12 verbose tar unpack /var/www/html/spot.js/spot.js
+13 verbose tar unpacking to /tmp/npm-9684-ce3a43f8/unpack-e2b16f1aceb3
+14 silly gentlyRm /tmp/npm-9684-ce3a43f8/unpack-e2b16f1aceb3 is being purged
+15 verbose gentlyRm don't care about contents; nuking /tmp/npm-9684-ce3a43f8/unpack-e2b16f1aceb3
+16 silly gunzTarPerm modes [ '755', '644' ]
+17 error not a package /var/www/html/spot.js/spot.js
+18 error addLocal Could not install /var/www/html/spot.js/spot.js
+19 verbose stack Error: ENOENT: no such file or directory, open '/tmp/npm-9684-ce3a43f8/unpack-e2b16f1aceb3/package.json'
+19 verbose stack     at Error (native)
+20 verbose cwd /var/www/html/spot.js
+21 error Linux 3.19.0-32-generic
+22 error argv "/usr/local/n/versions/node/6.0.0/bin/node" "/usr/bin/npm" "publish" "spot.js"
+23 error node v6.0.0
+24 error npm  v2.15.0
+25 error path /tmp/npm-9684-ce3a43f8/unpack-e2b16f1aceb3/package.json
+26 error code ENOENT
+27 error errno -2
+28 error syscall open
+29 error enoent ENOENT: no such file or directory, open '/tmp/npm-9684-ce3a43f8/unpack-e2b16f1aceb3/package.json'
+29 error enoent This is most likely not a problem with npm itself
+29 error enoent and is related to npm not being able to find a file.
+30 verbose exit [ -2, true ]
