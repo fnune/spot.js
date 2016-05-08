@@ -35,6 +35,17 @@
         mouseY = event.clientY;
     }
 
+    function on(el, eventName, callback) {
+        if (el.addEventListener) {
+            el.addEventListener(eventName, callback, false);
+            return;
+        }
+        if (el.attachEvent) {
+            el.attachEvent(eventName, callback);
+            return;
+        }
+    }
+
     /* Reduce the amount of times onmousemove functions are fired */
     /* Credit: http://blogorama.nerdworks.in/javascriptfunctionthrottlingan/ */
     function throttle(delay, callback) {
@@ -178,28 +189,28 @@
     /* EVENT LISTENERS */
     if (elems.spotArea[0]) {
         for (var i = 0; i < elems.spotArea.length; i += 1) {
-            elems.spotArea[i].onmousemove = throttle(1000 / spotFPS, function (event) {
+            on(elems.spotArea[i], 'mousemove', throttle(1000 / spotFPS, function (event) {
                 initiateSpotEffects(event);
                 updateIndicatorInfo();
-            });
+            }));
         }
     } else {
-        window.onmousemove = throttle(1000 / spotFPS, function (event) {
+        on(window, 'mousemove', throttle(1000 / spotFPS, function (event) {
             initiateSpotEffects(event);
             updateIndicatorInfo();
-        });
+        }));
     }
 
-    window.onload = function () {
+    on(window, 'load', function () {
         createSpotInstances();
-    };
+    });
 
-    window.onresize = function () {
+    on(window, 'resize', function () {
         clearAllEffects();
         createSpotInstances();
-    };
+    });
 
-    window.onscroll = function () {
+    on(window, 'scroll', function () {
         if (scrollTimer !== null) {
             clearTimeout(scrollTimer);
         }
@@ -207,5 +218,5 @@
             clearAllEffects();
             createSpotInstances();
         }, 50);
-    };
+    });
 }());
