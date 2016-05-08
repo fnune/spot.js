@@ -41,7 +41,7 @@
             return;
         }
         if (el.attachEvent) {
-            el.addEventListener(eventName, callback);
+            el.attachEvent(eventName, callback);
             return;
         }
     }
