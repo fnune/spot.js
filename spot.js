@@ -6,18 +6,23 @@
     var spotAreaElem = document.getElementsByClassName("spot-area"),
         spotShadowElem = document.getElementsByClassName("spot-shadow"),
         spotRotateElem = document.getElementsByClassName("spot-rotate"),
+        spotPerspectiveElem = document.getElementsByClassName("spot-perspective"),
         spotIndicatorElem = document.getElementsByClassName("spot-indicator"),
-        indicatorOverlays = document.getElementsByClassName("spot-indicator-overlay"),
+        indicatorOverlays = document.getElementsByClassName("spot-indicator-overlay");
 
-        spotShadowInstance = [],
+    var spotShadowInstance = [],
         spotRotateInstance = [],
+        spotPerspectiveInstance = [],
         spotIndicatorInstance = [],
+        perspectiveX = [],
+        perspectiveY = [],
         shadowDist = [],
         indicator = [],
         scrollTimer = null,
         elems = {
             spotShadow: spotShadowElem,
             spotRotate: spotRotateElem,
+            spotPerspective: spotPerspectiveElem,
             spotIndicator: spotIndicatorElem,
             spotArea: spotAreaElem
         };
@@ -69,6 +74,10 @@
             }
             return angle;
         },
+        getUnchangedAngle: function () {
+            var unhangedAngle = -Math.round(this.getRadians() * 18000 / Math.PI) / 100;
+            return unhangedAngle;
+        },
         getDistance: function () {
             var dist = Math.round(Math.sqrt(Math.pow(mouseX - this.elemX, 2) + Math.pow(this.elemY - mouseY, 2)));
             return dist;
@@ -80,12 +89,13 @@
 
         var spotIndicator = elems.spotIndicator,
             spotShadow = elems.spotShadow,
-            spotRotate = elems.spotRotate;
+            spotRotate = elems.spotRotate,
+            spotPerspective = elems.spotPerspective;
 
         var spotIndicatorLength = spotIndicator.length,
             spotShadowLength = spotShadow.length,
             spotRotateLength = spotRotate.length,
-            instancesLength = spotIndicatorInstance.length;
+            spotPerspectiveLength = spotPerspective.length;
 
         var docFragment = document.createDocumentFragment(),
             indicatorInstance,
@@ -102,8 +112,11 @@
         for (var i = 0; i < spotRotateLength; i += 1) {
             spotRotateInstance[i] = new SpotInstance(spotRotate[i]);
         }
+        for (var i = 0; i < spotPerspectiveLength; i += 1) {
+            spotPerspectiveInstance[i] = new SpotInstance(spotPerspective[i]);
+        }
 
-        for (var i = 0; i < instancesLength; i += 1) {
+        for (var i = 0; i < spotIndicatorLength; i += 1) {
 
             indicatorInstance = spotIndicatorInstance[i].elem;
             boundingClientRect = indicatorInstance.getBoundingClientRect();
@@ -121,16 +134,18 @@
     function initiateSpotEffects(event) {
 
         var spotShadowInstanceLength = spotShadowInstance.length,
-            spotRotateInstanceLength = spotRotateInstance.length;
+            spotRotateInstanceLength = spotRotateInstance.length,
+            spotPerspectiveInstanceLength = spotPerspectiveInstance.length;
 
         var shadowInstance,
             shadowInstanceStyle,
             rotateInstance,
+            perspectiveInstance,
             dropShadowText;
 
         getMousePosition(event);
+        /* Shadow effect definitions */
         for (var i = 0; i < spotShadowInstanceLength; i += 1) {
-
             shadowInstance = spotShadowInstance[i];
             shadowInstanceStyle = shadowInstance.elem.style;
             shadowDist[i] = Math.round(shadowInstance.getDistance() / shadowBlur);
@@ -144,18 +159,24 @@
                 shadowInstanceStyle.filter = "none";
             }
         }
+        /* Rotation effect definitions */
         for (var i = 0; i < spotRotateInstanceLength; i += 1) {
             rotateInstance = spotRotateInstance[i];
             rotateInstance.elem.style.transform = "rotate(" + rotateInstance.getAngle() + "deg)";
+        }
+        /* Perspective effect definitions */
+        for (i = 0; i < spotPerspectiveInstance.length; i += 1) {
+            var distValue = 200000 / spotPerspectiveInstance[i].getDistance();
+            var perspectiveX = Math.sin(spotPerspectiveInstance[i].getRadians()) * 20;
+            var perspectiveY = -Math.abs(spotPerspectiveInstance[i].getRadians()) * 20 + 30;
+            spotPerspectiveInstance[i].elem.style.transform = "perspective(" + distValue + "px) rotateX(" + perspectiveX + "deg) " + "rotateY(" + perspectiveY + "deg)";
         }
     }
 
     /* This is tied to the mousemove event */
     function updateIndicatorInfo() {
-
         var instanceLength = spotIndicatorInstance.length,
             instance;
-
         for (var i = 0; i < instanceLength; i += 1) {
             instance = spotIndicatorInstance[i];
             indicator[i].innerHTML = instance.getDistance() + "px " + instance.getAngle() + "º";
@@ -164,11 +185,13 @@
 
     /* Because we don't want new instances taking positions of already rotated elements */
     function clearAllEffects() {
-
-        var instanceLength = spotRotateInstance.length;
-
-        for (var i = 0; i < instanceLength; i += 1) {
+        var rotateInstanceLength = spotRotateInstance.length,
+            perspectiveInstanceLength = spotPerspectiveInstance.length;
+        for (var i = 0; i < rotateInstanceLength; i += 1) {
             spotRotateInstance[i].elem.style.transform = "rotate(0deg)";
+        }
+        for (var i = 0; i < perspectiveInstanceLength; i += 1) {
+            spotPerspectiveInstance[i].elem.style.transform = "perspective(0px) rotateX(0deg) " + "rotateY(0deg)";
         }
         while (indicatorOverlays[0]) {
             indicatorOverlays[0].parentNode.removeChild(indicatorOverlays[0]);
