@@ -1,3 +1,4 @@
+demos/*
 tests/*
 spot.js.old
 .DS_Store
