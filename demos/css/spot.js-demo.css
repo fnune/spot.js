@@ -39,11 +39,6 @@ body, html {
 		opacity:1;
 	}
 
-	.spot-perspective {
-		transition:.2s all ease-out;
-		overflow:visible !important;
-	}
-
 	.centertext {
 		position:absolute;
 		z-index:20;
@@ -64,6 +59,7 @@ body, html {
 		vertical-align:middle;
 		border-radius:50%;
 		will-change:transform;
+		box-sizing:border-box;
 	}
 
 	.circledown {
@@ -90,8 +86,7 @@ body, html {
 	}
 
 	#circle1 {
-		background:transparent;
-		border:20px solid rgba(0,0,0,0.1);
+		background:white;
 		left:calc(50% - 200px);
 		top:calc(50% - 200px);
 		width:400px;
@@ -100,8 +95,7 @@ body, html {
 	}
 
 	#circle2 {
-		background:transparent;
-		border:20px solid rgba(0,0,0,0.1);
+		background:white;
 		left:calc(50% - 350px);
 		top:calc(50% - 350px);
 		width:700px;
@@ -135,12 +129,13 @@ body, html {
 	}
 
 	.octocat {
+		border:none !important;
 		content:"";
 		width:240px;
 		height:240px;
 		position:absolute;
 		right:68px;
-		bottom:600px;
+		bottom:670px;
 		pointer-events:none;
 		background:url(http://brainlessdeveloper.com/wp-content/uploads/2016/04/social-github.png);
 		display:block;

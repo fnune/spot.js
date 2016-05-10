@@ -13,13 +13,15 @@
 <div class="octocat spot-perspective"></div>
 <div class="controls spot-shadow">
 	<p style="color:grey; font-weight:400;">This demo is resource intensive due to the amount of elements being processed. Works best on Google Chrome.</p><div class="divider"></div>
-	<label style="font-weight:600; margin-bottom:16px;" for="shadowblur">Shadow distance:</label><input id="shadowblur" type="range" min="10" max="200" value="30"><div class="divider"></div>
+	<label style="font-weight:600; margin-bottom:16px;" for="shadowblur">Shadow sharpness:</label><input id="shadowblur" type="range" min="10" max="200" value="30"><div class="divider"></div>
 	<p>Inner circle controls:</p>
+    <label for="innerperspective">3D Perspective</label><input id="innerperspective" name="innereffect" value="perspective" type="radio">
 	<label for="innershadow">Dynamic drop-shadow</label><input id="innershadow" name="innereffect" value="shadow" type="radio">
 	<label for="innerrotation">Transform: rotate</label><input id="innerrotation" name="innereffect" value="rotation" type="radio">
 	<label for="innerindicator">Show indicators</label><input id="innerindicator" type="checkbox">
 <div class="divider"></div>
 	<p>Outer circle controls:</p>
+    <label for="outerperspective">3D Perspective</label><input id="outerperspective" name="outereffect" value="perspective" type="radio">
 	<label for="outershadow">Dynamic drop-shadow</label><input id="outershadow" name="outereffect" value="shadow" type="radio">
 	<label for="outerrotation">Transform: rotate</label><input id="outerrotation" name="outereffect" value="rotation" type="radio">
 	<label for="outerindicator">Show indicators</label><input id="outerindicator" type="checkbox">
@@ -143,6 +145,7 @@
         getMousePosition(event);
         for (i = 0; i < spotShadowInstance.length; i += 1) {
             shadowDist[i] = Math.round(spotShadowInstance[i].getDistance() / shadowBlur);
+            spotShadowInstance[i].elem.style.border = "none";
             if (spotShadowInstance[i].getDistance() > 15) {
                 spotShadowInstance[i].elem.style.webkitFilter = "drop-shadow(" + shadowDist[i] * -Math.round(Math.cos(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] * Math.round(Math.sin(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] + "px rgba(0,0,0,0.8))";
                 spotShadowInstance[i].elem.style.filter = "drop-shadow(" + shadowDist[i] * -Math.round(Math.cos(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] * Math.round(Math.sin(spotShadowInstance[i].getRadians()) * 10) / 10 + "px " + shadowDist[i] + "px rgba(0,0,0,0.8))";
@@ -152,13 +155,23 @@
             }
         }
         for (i = 0; i < spotRotateInstance.length; i += 1) {
+            spotRotateInstance[i].elem.style.border = "none";
             spotRotateInstance[i].elem.style.transform = "rotate(" + spotRotateInstance[i].getAngle() + "deg)";
         }
-        for (i = 0; i < spotPerspectiveInstance.length; i += 1) {
-            var distValue = 200000 / spotPerspectiveInstance[i].getDistance();
-            var weirdXValue = Math.sin(spotPerspectiveInstance[i].getRadians()) * 20;
-            var weirdYValue = -Math.abs(spotPerspectiveInstance[i].getRadians()) * 20 + 30;
-            spotPerspectiveInstance[i].elem.style.transform = "perspective(" + distValue + "px) rotateX(" + weirdXValue + "deg) " + "rotateY(" + weirdYValue + "deg)";
+        if (spotPerspectiveInstance[i].getDistance() > 30) {
+            for (i = 0; i < spotPerspectiveInstance.length; i += 1) {
+                var distValue = 200000 / spotPerspectiveInstance[i].getDistance();
+                var weirdXValue = Math.sin(spotPerspectiveInstance[i].getRadians()) * 20;
+                var weirdYValue = -Math.abs(spotPerspectiveInstance[i].getRadians()) * 20 + 30;
+                spotPerspectiveInstance[i].elem.style.transition = "none";
+                spotPerspectiveInstance[i].elem.style.border = "20px solid rgba(0,0,0,0.1)";
+                spotPerspectiveInstance[i].elem.style.transform = "perspective(" + distValue + "px) rotateX(" + weirdXValue + "deg) " + "rotateY(" + weirdYValue + "deg)";
+            }
+        } else {
+            for (i = 0; i < spotPerspectiveInstance.length; i += 1) {
+                spotPerspectiveInstance[i].elem.style.transform = "perspective(0px) rotateX(0deg) rotateY(0deg)";
+                spotPerspectiveInstance[i].elem.style.transition = ".3s all ease";
+            }
         }
     }
 
@@ -177,6 +190,9 @@
         }
         for (i = 0; i < spotRotateInstance.length; i += 1) {
             spotRotateInstance[i].elem.style.transform = "rotate(0deg)";
+        }
+        for(i = 0; i < spotPerspectiveInstance.length; i += 1) {
+            spotPerspectiveInstance[i].elem.style.transform = "perspective(0) rotateX(0deg) rotateY(0deg)";
         }
         while (indicatorOverlays[0]) {
             indicatorOverlays[0].parentNode.removeChild(indicatorOverlays[0]);
@@ -221,6 +237,7 @@ function killSpot() {
 	spotIndicatorInstance = [];
 	spotShadowInstance = [];
 	spotRotateInstance = [];
+    spotPerspectiveInstance = [];
 }
 
 var innerCircle = document.getElementById("circle1"),
@@ -229,17 +246,19 @@ var innerCircle = document.getElementById("circle1"),
 var innerShadow = document.getElementById("innershadow"),
 	innerRotation = document.getElementById("innerrotation"),
 	innerIndicator = document.getElementById("innerindicator"),
+    innerPerspective = document.getElementById("innerperspective"),
 	outerShadow = document.getElementById("outershadow"),
 	outerRotation = document.getElementById("outerrotation"),
 	outerIndicator = document.getElementById("outerindicator"),
+    outerPerspective = document.getElementById("outerperspective"),
 	shadowBlurControl = document.getElementById("shadowblur");
 
 shadowBlurControl.onchange = function() {
 	shadowBlur = shadowBlurControl.value;
 }
 
-innerShadow.checked = true;
-outerShadow.checked = true;
+innerPerspective.checked = true;
+outerPerspective.checked = true;
 
 innerIndicator.onchange = function() {
 	if (innerIndicator.checked) {
@@ -254,26 +273,39 @@ innerIndicator.onchange = function() {
 };
 
 outerIndicator.onchange = function() {
-	if (outerIndicator.checked) {
-		outerCircle.classList.add("spot-indicator");
-	} else {
-		outerCircle.classList.remove("spot-indicator");
-	}
-	getSpotElems();
-	clearAllEffects();
-	killSpot();
-	createSpotInstances();
+    if (outerIndicator.checked) {
+        outerCircle.classList.add("spot-indicator");
+    } else {
+        outerCircle.classList.remove("spot-indicator");
+    }
+    getSpotElems();
+    clearAllEffects();
+    killSpot();
+    createSpotInstances();
 };
 
 innerShadow.onchange = function() {
-	clearAllEffects();
-	killSpot();
-	if (innerShadow.checked) {
-		innerCircle.classList.add("spot-shadow");
-		innerCircle.classList.remove("spot-rotate");
-	}
-	getSpotElems();
-	createSpotInstances();
+    clearAllEffects();
+    killSpot();
+    if (innerShadow.checked) {
+        innerCircle.classList.add("spot-shadow");
+        innerCircle.classList.remove("spot-rotate");
+        innerCircle.classList.remove("spot-perspective");
+    }
+    getSpotElems();
+    createSpotInstances();
+};
+
+outerShadow.onchange = function() {
+    clearAllEffects();
+    killSpot();
+    if (outerShadow.checked) {
+        outerCircle.classList.add("spot-shadow");
+        outerCircle.classList.remove("spot-rotate");
+        outerCircle.classList.remove("spot-perspective");
+    }
+    getSpotElems();
+    createSpotInstances();
 };
 
 innerRotation.onchange = function() {
@@ -282,17 +314,7 @@ innerRotation.onchange = function() {
 	if (innerRotation.checked) {
 		innerCircle.classList.add("spot-rotate");
 		innerCircle.classList.remove("spot-shadow");
-	}
-	getSpotElems();
-	createSpotInstances();
-};
-
-outerShadow.onchange = function() {
-	clearAllEffects();
-	killSpot();
-	if (outerShadow.checked) {
-		outerCircle.classList.add("spot-shadow");
-		outerCircle.classList.remove("spot-rotate");
+        innerCircle.classList.remove("spot-perspective");
 	}
 	getSpotElems();
 	createSpotInstances();
@@ -304,13 +326,37 @@ outerRotation.onchange = function() {
 	if (outerRotation.checked) {
 		outerCircle.classList.add("spot-rotate");
 		outerCircle.classList.remove("spot-shadow");
+        outerCircle.classList.remove("spot-perspective");
 	}
 	getSpotElems();
 	createSpotInstances();
 };
 
-}());
+innerPerspective.onchange = function() {
+    clearAllEffects();
+    killSpot();
+    if (innerPerspective.checked) {
+        innerCircle.classList.add("spot-perspective");
+        innerCircle.classList.remove("spot-shadow");
+        innerCircle.classList.remove("spot-rotate");
+    }
+    getSpotElems();
+    createSpotInstances();
+};
 
+outerPerspective.onchange = function() {
+    clearAllEffects();
+    killSpot();
+    if (outerPerspective.checked) {
+        outerCircle.classList.add("spot-perspective");
+        outerCircle.classList.remove("spot-shadow");
+        outerCircle.classList.remove("spot-rotate");
+    }
+    getSpotElems();
+    createSpotInstances();
+};
+
+}());
 </script>
 </body>
 </html>
