@@ -3,11 +3,18 @@
   "version": "1.0.1",
   "description": "Easily implement mouse event related effects on your website.",
   "main": "spot.js",
+  "devDependencies": {
+    "uglifyjs": "^2.4.10"
+  },
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run minify",
+    "prepublish": "npm run build",
+    "postinstall": "npm run build",
+    "minify": "uglifyjs --c --m --screw-ie8 --o spot.min.js spot.js"
   },
   "repository": {
     "type": "git",
