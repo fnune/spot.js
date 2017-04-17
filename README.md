@@ -11,7 +11,7 @@
 
 ## Live demos
 
-[Click here for a spot.js live demo](http://brainlessdeveloper.com/spot.js/demos/spot.js-demo.html)
+*I moved my blog and I'm working on uploading a new live demo. Sorry about that, will fix soon!*
 
 ## Installation
 
