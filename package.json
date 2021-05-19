@@ -1,35 +1,51 @@
 {
   "name": "spot.js",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Easily implement mouse event related effects on your website.",
-  "main": "spot.js",
-  "devDependencies": {
-    "uglifyjs": "^2.4.10"
+  "author": "Fausto Núñez Alberro <fausto.nunez@mailbox.org> (http://fnune.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fnune/spot.js/issues"
   },
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run minify",
-    "prepublish": "npm run build",
-    "postinstall": "npm run build",
-    "minify": "uglifyjs --c --m --screw-ie8 --o spot.min.js spot.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brainlessdeveloper/spot.js.git"
-  },
+  "homepage": "https://github.com/fnune/spot.js",
+  "repository": "git+https://github.com/fnune/spot.js.git",
   "keywords": [
+    "TypeScript",
     "JavaScript",
     "mousemove",
     "effect",
     "plugin"
   ],
-  "author": "Fausto Núñez Alberro <fausto.nunez@outlook.com> (http://brainlessdeveloper.com)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/brainlessdeveloper/spot.js/issues"
+  "main": "dist/index.js",
+  "browser": "dist/spot.min.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn build:declarations && yarn build:node && yarn build:browser --outfile=dist/index.js",
+    "build:browser": "esbuild src/index.ts --bundle --minify --sourcemap --target=chrome58,firefox57,safari11,edge16 --outfile=dist/spot.min.js",
+    "build:declarations": "tsc src/index.ts --declaration --emitDeclarationOnly --declarationDir dist",
+    "build:node": "esbuild src/index.ts --bundle --platform=node",
+    "jest": "jest",
+    "prepublishOnly": "yarn build",
+    "test:ci": "yarn test:lint && yarn test:format && yarn test:types && yarn test:unit",
+    "test:format": "yarn test:format:base --check",
+    "test:format:base": "prettier --ignore-path=./.gitignore .",
+    "test:format:fix": "yarn test:format:base --write",
+    "test:lint": "yarn test:lint:base",
+    "test:lint:base": "eslint . --ext .ts",
+    "test:lint:fix": "yarn test:lint:base --fix",
+    "test:types": "tsc --noEmit",
+    "test:unit": "yarn jest"
   },
-  "homepage": "https://github.com/brainlessdeveloper/spot.js#readme"
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0",
+    "esbuild": "^0.12.1",
+    "eslint": "^7.26.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.3.0",
+    "typescript": "^4.2.4"
+  }
 }

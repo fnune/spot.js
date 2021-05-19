@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "lib": ["ES6", "DOM"],
+    "outDir": "dist",
+    "removeComments": true,
+    "sourceMap": true,
+    "strict": true
+  },
+  "include": ["src/**/*"]
+}

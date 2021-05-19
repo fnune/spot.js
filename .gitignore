@@ -1,7 +1,5 @@
+dist/*
 demos/*
-tests/*
-spot.js.old
 .DS_Store
-demos/*
-npm-debug.log
+yarn-error.log
 node_modules
